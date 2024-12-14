@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "Auto Reload",
+  "version": "1.0",
+  "description": "Automatically reloads the current page at a set interval.",
+  "permissions": ["tabs", "activeTab"],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "hello_extensions.png"
+  }
+}
