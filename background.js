@@ -1,4 +1,5 @@
 let intervalId;
+const intervals = {};
 
 function runTabQuery(request) {
   if (request.action === "start") {
@@ -33,20 +34,29 @@ function runSenderTab(request, sender) {
 }
 
 function runOnSelectedTab(request) {
-  if (request.action === "start" && request.tabId && !intervalId) {
-    intervalId = setInterval(() => {
+  console.log(':::::::::::::::::::::::::: request', request);
+  console.log(':::::::::::::::::::::::::: intervals', intervals);
+  console.log(':::::::::::::::::::::::::: condition', request.action === "start" && request.tabId && !intervals[request.tabId]);
+
+  if (request.action === "start" && request.tabId && !intervals[request.tabId]) {
+    console.log(':::::::::::::::::::::: starting: ', `tab: ${request.tabId}`, `timestamp: ${new Date().toISOString()}`);
+
+    intervals[request.tabId] = setInterval(() => {
+      console.log(':::::::::::::::::::::: reloading: ', `tab: ${request.tabId}`, `timestamp: ${new Date().toISOString()}`);
       chrome.tabs.reload(request.tabId);
     }, request.interval);
+    
     return;
   }
 
-  clearInterval(intervalId);
-  intervalId = null;  
+  console.log(':::::::::::::::::::::: clearing: ', `tab: ${request.tabId}`, `timestamp: ${new Date().toISOString()}`);
+  clearInterval(intervals[request.tabId]);
+  delete intervals[request.tabId];  
 }
 
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-  console.log(':::::::::::::::::::::::::: request', request);
-  console.log(':::::::::::::::::::::::::: sender', sender);
+  // console.log(':::::::::::::::::::::::::: request', request);
+  // console.log(':::::::::::::::::::::::::: sender', sender);
   runOnSelectedTab(request);
   // runTabQuery(request);
   // runSenderTab(request, sender);
