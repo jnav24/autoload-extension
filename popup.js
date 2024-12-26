@@ -6,6 +6,6 @@ document.getElementById("start").addEventListener("click", () => {
 
 document.getElementById("stop").addEventListener("click", () => {
   chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-    chrome.runtime.sendMessage({ action: "stop" });
+    chrome.runtime.sendMessage({ action: "stop", tabId: tabs?.[0]?.id });
   });
 });
